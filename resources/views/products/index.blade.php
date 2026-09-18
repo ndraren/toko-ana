@@ -142,15 +142,39 @@
                         <td class="py-3.5 text-right">
                             <div class="flex items-center justify-end gap-1">
                                 <button type="button" @click="activeItem = {{ json_encode($p) }}; editModalOpen = true" 
-                                        class="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-all">
+                                        class="p-1.5 text-slate-400 hover:text-brand-700 rounded-lg hover:bg-brand-50 transition-all" title="Edit Barang">
                                     <i data-lucide="pencil" class="w-4 h-4"></i>
                                 </button>
-                                <form action="{{ route('products.destroy', $p->id) }}" method="POST" onsubmit="return confirm('Hapus barang ini?')">
+                                <form action="{{ route('products.destroy', $p->id) }}" method="POST" 
+                                      x-data="{ showConfirm: false }" class="relative">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="p-1.5 text-slate-400 hover:text-red-600 rounded-lg hover:bg-slate-100 transition-all">
-                                        <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                                    <button type="button" @click="showConfirm = true" 
+                                            class="p-1.5 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-all" title="Hapus Barang">
+                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
                                     </button>
+                                    <!-- Confirmation Popover -->
+                                    <div x-show="showConfirm" x-cloak @click.away="showConfirm = false"
+                                         class="absolute right-0 top-full mt-1 z-20 bg-white border border-slate-200 rounded-xl shadow-xl p-4 w-64">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-9 h-9 rounded-full bg-red-100 text-red-600 flex items-center justify-center shrink-0">
+                                                <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                                            </div>
+                                            <div>
+                                                <p class="text-xs font-bold text-slate-900">Hapus barang ini?</p>
+                                                <p class="text-[11px] text-slate-500 mt-0.5">{{ $p->name }} akan dihapus permanen dari database.</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-slate-100">
+                                            <button type="button" @click="showConfirm = false" class="px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg transition-all">
+                                                Batal
+                                            </button>
+                                            <button type="submit" class="px-3 py-1.5 text-xs font-bold text-white bg-red-600 hover:bg-red-700 rounded-lg transition-all flex items-center gap-1">
+                                                <i data-lucide="trash-2" class="w-3 h-3"></i>
+                                                Hapus
+                                            </button>
+                                        </div>
+                                    </div>
                                 </form>
                             </div>
                         </td>

@@ -7,6 +7,7 @@ use App\Http\Controllers\StockMovementController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\CashierController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,8 +18,16 @@ use App\Http\Controllers\TransactionController;
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/dashboard', [DashboardController::class, 'index']);
 
+// Kasir POS Routes
+Route::get('/kasir', [CashierController::class, 'index'])->name('kasir.index');
+Route::post('/kasir/checkout', [CashierController::class, 'store'])->name('kasir.checkout');
+Route::get('/kasir/search', [CashierController::class, 'searchProduct'])->name('kasir.search');
+Route::get('/kasir/receipt/{transaction}', [CashierController::class, 'receipt'])->name('kasir.receipt');
+
 // Data Barang Routes
-Route::resource('barang', ProductController::class)->names([
+Route::resource('barang', ProductController::class)->parameters([
+    'barang' => 'product'
+])->names([
     'index' => 'products.index',
     'create' => 'products.create',
     'store' => 'products.store',
@@ -28,7 +37,7 @@ Route::resource('barang', ProductController::class)->names([
     'destroy' => 'products.destroy',
 ]);
 
-// Stok Masuk & Keluar Routes
+// Stok Masuk Routes
 Route::get('/stok', [StockMovementController::class, 'index'])->name('stok.index');
 Route::post('/stok', [StockMovementController::class, 'store'])->name('stok.store');
 
@@ -39,3 +48,4 @@ Route::get('/transaksi/{transaction}', [TransactionController::class, 'show'])->
 // Laporan & Pengaturan Routes
 Route::get('/laporan', [ReportController::class, 'index'])->name('laporan.index');
 Route::get('/pengaturan', [SettingController::class, 'index'])->name('pengaturan.index');
+
