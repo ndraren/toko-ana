@@ -3,9 +3,9 @@
 @section('content')
 <div class="space-y-6 max-w-7xl mx-auto">
     <!-- Page Header & Period Filter -->
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-            <div class="flex items-center gap-3">
+            <div class="flex flex-wrap items-center gap-3">
                 <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Ringkasan Toko</h2>
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -18,7 +18,7 @@
         </div>
 
         <!-- Period Toggle Buttons -->
-        <div class="bg-slate-100 p-1 rounded-xl flex items-center gap-1 text-xs font-semibold text-slate-600">
+        <div class="bg-slate-100 p-1 rounded-xl flex items-center overflow-x-auto whitespace-nowrap gap-1 text-xs font-semibold text-slate-600">
             <a href="?period=today" class="px-3 py-1.5 rounded-lg {{ $timeFilter == 'today' ? 'bg-white text-slate-900 shadow-xs' : 'hover:text-slate-900' }}">Hari Ini</a>
             <a href="?period=week" class="px-3 py-1.5 rounded-lg {{ $timeFilter == 'week' ? 'bg-white text-slate-900 shadow-xs' : 'hover:text-slate-900' }}">Pekan Ini</a>
             <a href="?period=month" class="px-3 py-1.5 rounded-lg {{ $timeFilter == 'month' ? 'bg-white text-slate-900 shadow-xs' : 'hover:text-slate-900' }}">Bulan Ini</a>
@@ -241,7 +241,7 @@
     </div>
 
     <!-- Bottom Banner: Cek Fisik Cepat & Barcode Scanner -->
-    <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs flex items-center justify-between">
+    <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
         <div class="flex items-center gap-4">
             <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 border border-emerald-200">
                 <i data-lucide="qr-code" class="w-6 h-6"></i>
@@ -252,11 +252,11 @@
             </div>
         </div>
 
-        <div class="flex items-center gap-3">
-            <button class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl border border-slate-200 transition-all">
+        <div class="flex items-center gap-3 w-full md:w-auto">
+            <button class="flex-1 md:flex-none px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl border border-slate-200 transition-all text-center">
                 Export Excel
             </button>
-            <button @click="barcodeScannerOpen = true" class="px-4 py-2 bg-brand-dark hover:bg-brand-800 text-white text-xs font-semibold rounded-xl flex items-center gap-2 shadow-xs transition-all">
+            <button @click="barcodeScannerOpen = true" class="flex-1 md:flex-none justify-center px-4 py-2 bg-brand-dark hover:bg-brand-800 text-white text-xs font-semibold rounded-xl flex items-center gap-2 shadow-xs transition-all">
                 <i data-lucide="scan" class="w-4 h-4"></i>
                 <span>Mulai Pindai</span>
             </button>

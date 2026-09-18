@@ -3,7 +3,7 @@
 @section('content')
 <div class="space-y-6 max-w-7xl mx-auto" x-data="{ addModalOpen: false, editModalOpen: false, activeItem: {} }">
     <!-- Header -->
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
             <div class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
                 <span>KATALOG UTAMA</span>
@@ -15,15 +15,15 @@
         </div>
 
         <!-- Stat Badges Top Right -->
-        <div class="flex items-center gap-3">
-            <div class="bg-white border border-slate-200/80 rounded-xl px-4 py-2 text-right shadow-xs">
+        <div class="flex items-center gap-3 w-full md:w-auto">
+            <div class="flex-1 md:flex-none bg-white border border-slate-200/80 rounded-xl px-4 py-2 text-right shadow-xs">
                 <span class="text-[11px] font-semibold text-slate-400 block">Total SKU</span>
                 <span class="text-sm font-black text-slate-900 flex items-center gap-1.5 justify-end">
                     <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                     {{ $totalCount }} Item
                 </span>
             </div>
-            <div class="bg-white border border-slate-200/80 rounded-xl px-4 py-2 text-right shadow-xs">
+            <div class="flex-1 md:flex-none bg-white border border-slate-200/80 rounded-xl px-4 py-2 text-right shadow-xs">
                 <span class="text-[11px] font-semibold text-slate-400 block">Perlu Restock</span>
                 <span class="text-sm font-black text-red-600 flex items-center gap-1.5 justify-end">
                     <span class="w-2 h-2 rounded-full bg-red-500"></span>
@@ -73,7 +73,7 @@
         </form>
 
         <!-- Status Filter Pills -->
-        <div class="flex items-center gap-2 pt-2 border-t border-slate-100 text-xs font-semibold">
+        <div class="flex items-center overflow-x-auto whitespace-nowrap gap-2 pt-2 border-t border-slate-100 text-xs font-semibold pb-1">
             <a href="{{ route('products.index', ['status' => 'all', 'search' => $search, 'category' => $category]) }}" 
                class="px-4 py-1.5 rounded-full transition-all {{ $status == 'all' ? 'bg-brand-100/80 text-brand-800 font-bold' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
                 Semua <span class="ml-1 text-[11px] font-extrabold opacity-75">{{ $totalCount }}</span>
@@ -98,7 +98,7 @@
                 <thead>
                     <tr class="border-b border-slate-100 text-slate-400 uppercase tracking-wider text-[11px] font-bold">
                         <th class="py-3 w-10 text-center"><input type="checkbox" class="rounded border-slate-300 text-brand-600 focus:ring-brand-500"></th>
-                        <th class="py-3 font-semibold">NAMA BARANG & SKU</th>
+                        <th class="py-3 font-semibold min-w-[200px]">NAMA BARANG & SKU</th>
                         <th class="py-3 font-semibold">KATEGORI</th>
                         <th class="py-3 text-center font-semibold">STOK</th>
                         <th class="py-3 text-center font-semibold">SATUAN</th>
@@ -112,12 +112,12 @@
                     @forelse($products as $p)
                     <tr class="hover:bg-slate-50/80 transition-colors">
                         <td class="py-3.5 text-center"><input type="checkbox" class="rounded border-slate-300 text-brand-600"></td>
-                        <td class="py-3.5">
+                        <td class="py-3.5 min-w-[200px]">
                             <p class="font-bold text-slate-900 text-sm">{{ $p->name }}</p>
                             <p class="text-[11px] text-slate-400 mt-0.5">SKU: {{ $p->sku }} • {{ $p->barcode }}</p>
                         </td>
                         <td class="py-3.5">
-                            <span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-slate-100 text-slate-600">
+                            <span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-slate-100 text-slate-600 whitespace-nowrap">
                                 {{ $p->category }}
                             </span>
                         </td>
@@ -127,14 +127,14 @@
                         <td class="py-3.5 text-center font-medium text-slate-500">
                             {{ $p->unit }}
                         </td>
-                        <td class="py-3.5 text-right font-medium text-slate-600">
+                        <td class="py-3.5 text-right font-medium text-slate-600 whitespace-nowrap">
                             Rp {{ number_format($p->cost_price, 0, ',', '.') }}
                         </td>
-                        <td class="py-3.5 text-right font-extrabold text-slate-900">
+                        <td class="py-3.5 text-right font-extrabold text-slate-900 whitespace-nowrap">
                             Rp {{ number_format($p->selling_price, 0, ',', '.') }}
                         </td>
                         <td class="py-3.5 text-center">
-                            <span class="{{ $p->status_badge_class }}">
+                            <span class="{{ $p->status_badge_class }} whitespace-nowrap">
                                 <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
                                 {{ $p->status }}
                             </span>
@@ -167,16 +167,16 @@
         </div>
 
         <!-- Table Footer / Pagination -->
-        <div class="pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 font-medium">
+        <div class="pt-4 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500 font-medium">
             <span>Menampilkan {{ $products->firstItem() ?? 0 }}-{{ $products->lastItem() ?? 0 }} dari {{ $products->total() }} barang</span>
-            <div>
+            <div class="w-full md:w-auto overflow-x-auto">
                 {{ $products->links() }}
             </div>
         </div>
     </div>
 
     <!-- Bottom Shortcut Bar -->
-    <div class="flex items-center justify-between text-xs font-semibold text-slate-500">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-semibold text-slate-500">
         <div class="flex items-center gap-4">
             <div class="flex items-center gap-1.5">
                 <span class="bg-slate-200 text-slate-800 font-bold px-1.5 py-0.5 rounded text-[10px]">F2</span>
@@ -187,7 +187,7 @@
                 <span>Fokus Pencarian</span>
             </div>
         </div>
-        <div class="flex items-center gap-1.5 text-emerald-600 font-bold">
+        <div class="flex items-center gap-1.5 text-emerald-600 font-bold text-center">
             <i data-lucide="check-circle-2" class="w-4 h-4"></i>
             <span>Katalog tersinkronisasi otomatis dengan mesin kasir</span>
         </div>
@@ -202,7 +202,7 @@
             </div>
             <form action="{{ route('products.store') }}" method="POST" class="space-y-4">
                 @csrf
-                <div class="grid grid-cols-2 gap-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">SKU</label>
                         <input type="text" name="sku" required placeholder="BRG-099" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
@@ -216,7 +216,7 @@
                     <label class="block text-xs font-bold text-slate-700 mb-1">Nama Barang</label>
                     <input type="text" name="name" required placeholder="Contoh: Indomie Goreng" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
                 </div>
-                <div class="grid grid-cols-2 gap-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">Kategori</label>
                         <input type="text" name="category" required placeholder="Makanan / Minuman" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
@@ -226,7 +226,7 @@
                         <input type="text" name="unit" required placeholder="Bungkus / Pouch / Botol" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">Stok Awal</label>
                         <input type="number" name="stock" value="10" required class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
@@ -236,7 +236,7 @@
                         <input type="number" name="min_stock" value="5" required class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">Harga Modal (Rp)</label>
                         <input type="number" name="cost_price" required placeholder="2500" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
