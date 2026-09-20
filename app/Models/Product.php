@@ -19,6 +19,14 @@ class Product extends Model
         'unit',
         'cost_price',
         'selling_price',
+        'wholesale_price',
+        'wholesale_min_qty',
+        'pack_name',
+        'pack_price',
+        'pack_qty',
+        'box_name',
+        'box_price',
+        'box_qty',
         'supplier_name',
     ];
 

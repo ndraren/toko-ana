@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\StockMovement;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -19,8 +21,11 @@ class DashboardController extends Controller
         
         $criticalProductsCount = Product::whereRaw('stock <= min_stock')->count();
         
-        $todaySalesValue = 4120000; // Rp 4,12 Jt as per mockup design
-        $todayTransactionsCount = 142;
+        // Real sales data from transactions
+        $todaySalesValue = Transaction::where('status', 'success')
+            ->whereDate('created_at', Carbon::today())
+            ->sum('total_amount');
+        $todayTransactionsCount = Transaction::whereDate('created_at', Carbon::today())->count();
 
         // Barang Prioritas Restock (stok <= min_stock)
         $restockProducts = Product::whereRaw('stock <= min_stock')
