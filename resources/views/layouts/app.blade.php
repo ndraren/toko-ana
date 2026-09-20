@@ -39,21 +39,30 @@
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased font-sans" x-data="{ quickModalOpen: false, barcodeScannerOpen: false }">
+<body class="bg-slate-50 text-slate-800 antialiased font-sans" x-data="{ sidebarOpen: false, quickModalOpen: false, barcodeScannerOpen: false }">
 
     <div class="flex min-h-screen">
+        <!-- Mobile Sidebar Backdrop -->
+        <div x-show="sidebarOpen" x-transition.opacity class="fixed inset-0 z-40 bg-slate-900/50 lg:hidden" @click="sidebarOpen = false" style="display: none;"></div>
+
         <!-- Sidebar Navigation -->
-        <aside class="w-64 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 sticky top-0 h-screen overflow-y-auto">
+        <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 transition-transform duration-300 lg:static lg:translate-x-0 h-screen overflow-y-auto">
             <div class="p-5">
                 <!-- Logo & Brand Header -->
-                <div class="flex items-center gap-3 mb-8">
-                    <div class="w-10 h-10 rounded-xl bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-700 font-bold text-xl">
-                        <i data-lucide="store" class="w-5 h-5 text-brand-700"></i>
+                <div class="flex items-center justify-between mb-8">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-700 font-bold text-xl">
+                            <i data-lucide="store" class="w-5 h-5 text-brand-700"></i>
+                        </div>
+                        <div>
+                            <h1 class="font-extrabold text-lg text-slate-900 leading-tight tracking-tight">SIKOL</h1>
+                            <p class="text-xs text-slate-500 font-medium">Inventaris Kelontong</p>
+                        </div>
                     </div>
-                    <div>
-                        <h1 class="font-extrabold text-lg text-slate-900 leading-tight tracking-tight">SIKOL</h1>
-                        <p class="text-xs text-slate-500 font-medium">Inventaris Kelontong</p>
-                    </div>
+                    <!-- Close Sidebar Button (Mobile) -->
+                    <button @click="sidebarOpen = false" class="lg:hidden p-2 text-slate-400 hover:bg-slate-100 rounded-lg">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
                 </div>
 
                 <!-- Navigation Section -->
@@ -137,28 +146,36 @@
         <!-- Main Content Wrapper -->
         <div class="flex-1 flex flex-col min-w-0">
             <!-- Top Navigation Header -->
-            <header class="bg-white border-b border-slate-200 px-8 py-3.5 flex items-center justify-between sticky top-0 z-30 shadow-xs">
-                <!-- Search Bar -->
-                <div class="relative w-96">
-                    <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-                    <input type="text" 
-                           placeholder="Cari barang, SKU, atau barcode..." 
-                           class="w-full bg-slate-50/80 border border-slate-200 rounded-xl pl-10 pr-4 py-2 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 transition-all">
+            <header class="bg-white border-b border-slate-200 px-4 md:px-8 py-3.5 flex items-center justify-between sticky top-0 z-30 shadow-xs">
+                
+                <div class="flex items-center gap-4">
+                    <!-- Mobile Menu Button -->
+                    <button @click="sidebarOpen = true" class="lg:hidden p-2 -ml-2 text-slate-500 hover:bg-slate-100 rounded-lg">
+                        <i data-lucide="menu" class="w-5 h-5"></i>
+                    </button>
+
+                    <!-- Search Bar -->
+                    <div class="relative w-full max-w-md hidden md:block">
+                        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                        <input type="text" 
+                               placeholder="Cari barang, SKU, atau barcode..." 
+                               class="w-full bg-slate-50/80 border border-slate-200 rounded-xl pl-10 pr-4 py-2 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 transition-all">
+                    </div>
                 </div>
 
                 <!-- Right Header Actions -->
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-3 md:gap-4">
                     <!-- Date & Shift Info -->
-                    <div class="flex items-center gap-2 text-xs font-medium text-slate-600 bg-slate-50 border border-slate-200/80 px-3 py-2 rounded-xl">
+                    <div class="hidden lg:flex items-center gap-2 text-xs font-medium text-slate-600 bg-slate-50 border border-slate-200/80 px-3 py-2 rounded-xl">
                         <i data-lucide="calendar" class="w-4 h-4 text-slate-400"></i>
                         <span>Kamis, 24 Okt • Shift Pagi</span>
                     </div>
 
                     <!-- Primary Action Button: + Catat Stok -->
                     <a href="{{ route('stok.index') }}" 
-                       class="bg-brand-dark hover:bg-brand-800 text-white font-semibold text-sm px-4 py-2 rounded-xl flex items-center gap-2 shadow-sm transition-all hover:shadow">
+                       class="bg-brand-dark hover:bg-brand-800 text-white font-semibold text-sm px-3 md:px-4 py-2 rounded-xl flex items-center gap-2 shadow-sm transition-all hover:shadow">
                         <i data-lucide="plus" class="w-4 h-4"></i>
-                        <span>Catat Stok</span>
+                        <span class="hidden md:inline">Catat Stok</span>
                     </a>
 
                     <!-- Notification Bell -->
@@ -171,13 +188,13 @@
                     <div class="flex items-center gap-1 cursor-pointer">
                         <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120" 
                              alt="Profile" class="w-9 h-9 rounded-full object-cover border border-brand-500/40">
-                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400"></i>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 hidden sm:block"></i>
                     </div>
                 </div>
             </header>
 
             <!-- Main Page View Content -->
-            <main class="flex-1 p-8">
+            <main class="flex-1 p-4 md:p-8">
                 @if(session('success'))
                     <div class="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-semibold flex items-center justify-between">
                         <div class="flex items-center gap-2">
