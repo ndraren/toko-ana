@@ -74,6 +74,12 @@ class ProductController extends Controller
             'selling_price' => 'required|numeric|min:0',
             'wholesale_price' => 'nullable|numeric|min:0',
             'wholesale_min_qty' => 'nullable|integer|min:0',
+            'pack_name' => 'nullable|string',
+            'pack_price' => 'nullable|numeric|min:0',
+            'pack_qty' => 'nullable|integer|min:0',
+            'box_name' => 'nullable|string',
+            'box_price' => 'nullable|numeric|min:0',
+            'box_qty' => 'nullable|integer|min:0',
             'supplier_name' => 'nullable|string',
         ]);
 
@@ -96,6 +102,12 @@ class ProductController extends Controller
             'selling_price' => 'required|numeric|min:0',
             'wholesale_price' => 'nullable|numeric|min:0',
             'wholesale_min_qty' => 'nullable|integer|min:0',
+            'pack_name' => 'nullable|string',
+            'pack_price' => 'nullable|numeric|min:0',
+            'pack_qty' => 'nullable|integer|min:0',
+            'box_name' => 'nullable|string',
+            'box_price' => 'nullable|numeric|min:0',
+            'box_qty' => 'nullable|integer|min:0',
             'supplier_name' => 'nullable|string',
         ]);
 

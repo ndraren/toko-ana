@@ -83,6 +83,12 @@
                         <span>Kasir</span>
                     </a>
 
+                    <a href="{{ route('pelanggan.index') }}" 
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all {{ request()->routeIs('pelanggan.*') ? 'bg-brand-100/70 text-brand-800' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
+                        <i data-lucide="users" class="w-5 h-5 {{ request()->routeIs('pelanggan.*') ? 'text-brand-700' : 'text-slate-400' }}"></i>
+                        <span>Pelanggan</span>
+                    </a>
+
                     <a href="{{ route('products.index') }}" 
                        class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all {{ request()->routeIs('products.*') ? 'bg-brand-100/70 text-brand-800' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
                         <i data-lucide="package" class="w-5 h-5 {{ request()->routeIs('products.*') ? 'text-brand-700' : 'text-slate-400' }}"></i>

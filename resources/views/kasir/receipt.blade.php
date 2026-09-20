@@ -68,6 +68,12 @@
                 <span class="text-slate-500">Pembayaran</span>
                 <span class="font-semibold text-slate-700">{{ $transaction->payment_method }}</span>
             </div>
+            <div class="flex justify-between text-xs">
+                <span class="text-slate-500">Mode Jual</span>
+                <span class="font-bold {{ $transaction->sale_mode === 'grosir' ? 'text-purple-700' : 'text-slate-700' }}">
+                    {{ $transaction->sale_mode === 'grosir' ? 'HARGA GROSIR' : 'Eceran' }}
+                </span>
+            </div>
         </div>
 
         <!-- Items -->

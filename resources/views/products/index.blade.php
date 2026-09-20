@@ -7,7 +7,7 @@
         <div>
             <div class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
                 <span>KATALOG UTAMA</span>
-                <span>•</span>
+                <span>â€¢</span>
                 <span class="text-slate-500">SIKOL SYSTEM</span>
             </div>
             <h2 class="text-2xl font-bold text-slate-900 tracking-tight mt-1">Data Barang</h2>
@@ -114,7 +114,7 @@
                         <td class="py-3.5 text-center"><input type="checkbox" class="rounded border-slate-300 text-brand-600"></td>
                         <td class="py-3.5 min-w-[200px]">
                             <p class="font-bold text-slate-900 text-sm">{{ $p->name }}</p>
-                            <p class="text-[11px] text-slate-400 mt-0.5">SKU: {{ $p->sku }} • {{ $p->barcode }}</p>
+                            <p class="text-[11px] text-slate-400 mt-0.5">SKU: {{ $p->sku }} â€¢ {{ $p->barcode }}</p>
                         </td>
                         <td class="py-3.5">
                             <span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-slate-100 text-slate-600 whitespace-nowrap">
@@ -217,18 +217,18 @@
         </div>
     </div>
 
-    <!-- Modal Tambah Barang -->
-    <div x-show="addModalOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4">
-        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-4" @click.away="addModalOpen = false">
-            <div class="flex items-center justify-between">
+        <!-- Modal Tambah Barang -->
+    <div x-show="addModalOpen" x-cloak class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-xl space-y-4 my-auto" @click.away="addModalOpen = false">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                 <h3 class="font-bold text-slate-900 text-lg">Tambah Barang Baru</h3>
                 <button @click="addModalOpen = false" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
             <form action="{{ route('products.store') }}" method="POST" class="space-y-4">
                 @csrf
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">SKU</label>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">SKU <span class="text-red-500">*</span></label>
                         <input type="text" name="sku" required placeholder="BRG-099" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
                     </div>
                     <div>
@@ -237,42 +237,194 @@
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Nama Barang</label>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Nama Barang <span class="text-red-500">*</span></label>
                     <input type="text" name="name" required placeholder="Contoh: Indomie Goreng" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
                 </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Kategori</label>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Kategori <span class="text-red-500">*</span></label>
                         <input type="text" name="category" required placeholder="Makanan / Minuman" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Satuan</label>
-                        <input type="text" name="unit" required placeholder="Bungkus / Pouch / Botol" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Satuan Dasar <span class="text-red-500">*</span></label>
+                        <input type="text" name="unit" required placeholder="Bungkus / Pcs" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
                     </div>
                 </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Stok Awal</label>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Stok Awal <span class="text-red-500">*</span></label>
                         <input type="number" name="stock" value="10" required class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Batas Min. Stok</label>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Batas Min. Stok <span class="text-red-500">*</span></label>
                         <input type="number" name="min_stock" value="5" required class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
                     </div>
                 </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Harga Modal (Rp)</label>
-                        <input type="number" name="cost_price" required placeholder="2500" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
+                
+                <!-- Pricing Section -->
+                <div class="border border-slate-200 rounded-xl p-4 bg-slate-50/50 space-y-4">
+                    <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Pengaturan Harga</h4>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1">Harga Modal</label>
+                            <input type="number" name="cost_price" required placeholder="2500" class="w-full bg-white border rounded-lg px-3 py-2 text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-blue-600 mb-1">Harga Eceran / Jual</label>
+                            <input type="number" name="selling_price" required placeholder="3500" class="w-full bg-white border-blue-200 rounded-lg px-3 py-2 text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-purple-600 mb-1">Harga Grosir (Satuan)</label>
+                            <input type="number" name="wholesale_price" placeholder="3200" class="w-full bg-white border-purple-200 rounded-lg px-3 py-2 text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-purple-600 mb-1">Min Beli utk Grosir</label>
+                            <input type="number" name="wholesale_min_qty" placeholder="Misal: 5" class="w-full bg-white border-purple-200 rounded-lg px-3 py-2 text-xs">
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Harga Jual (Rp)</label>
-                        <input type="number" name="selling_price" required placeholder="3500" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-slate-200/60">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1">Nama Renceng</label>
+                            <input type="text" name="pack_name" placeholder="Renceng / Pack" class="w-full bg-white border rounded-lg px-3 py-2 text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1">Isi per Renceng</label>
+                            <input type="number" name="pack_qty" placeholder="10" class="w-full bg-white border rounded-lg px-3 py-2 text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1">Harga 1 Renceng</label>
+                            <input type="number" name="pack_price" placeholder="30000" class="w-full bg-white border rounded-lg px-3 py-2 text-xs">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-slate-200/60">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1">Nama Dus</label>
+                            <input type="text" name="box_name" placeholder="Dus / Karton" class="w-full bg-white border rounded-lg px-3 py-2 text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1">Isi per Dus</label>
+                            <input type="number" name="box_qty" placeholder="40" class="w-full bg-white border rounded-lg px-3 py-2 text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1">Harga 1 Dus</label>
+                            <input type="number" name="box_price" placeholder="115000" class="w-full bg-white border rounded-lg px-3 py-2 text-xs">
+                        </div>
                     </div>
                 </div>
-                <div class="pt-3 flex justify-end gap-2">
-                    <button type="button" @click="addModalOpen = false" class="px-4 py-2 text-slate-600 font-semibold text-xs rounded-xl">Batal</button>
-                    <button type="submit" class="px-5 py-2 bg-brand-dark hover:bg-brand-800 text-white font-bold text-xs rounded-xl">Simpan Barang</button>
+
+                <div class="pt-4 flex justify-end gap-2">
+                    <button type="button" @click="addModalOpen = false" class="px-4 py-2 text-slate-600 font-semibold text-sm rounded-xl">Batal</button>
+                    <button type="submit" class="px-6 py-2 bg-brand-dark hover:bg-brand-800 text-white font-bold text-sm rounded-xl shadow-md">Simpan Barang</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Edit Barang -->
+    <div x-show="editModalOpen" x-cloak class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-xl space-y-4 my-auto" @click.away="editModalOpen = false">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="font-bold text-slate-900 text-lg">Edit Data Barang</h3>
+                <button @click="editModalOpen = false" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <form :action="'{{ url('products') }}/' + activeItem.id" method="POST" class="space-y-4">
+                @csrf
+                @method('PUT')
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">SKU <span class="text-red-500">*</span></label>
+                        <input type="text" name="sku" x-model="activeItem.sku" required class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Barcode</label>
+                        <input type="text" name="barcode" x-model="activeItem.barcode" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Nama Barang <span class="text-red-500">*</span></label>
+                    <input type="text" name="name" x-model="activeItem.name" required class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Kategori <span class="text-red-500">*</span></label>
+                        <input type="text" name="category" x-model="activeItem.category" required class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Satuan Dasar <span class="text-red-500">*</span></label>
+                        <input type="text" name="unit" x-model="activeItem.unit" required class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Stok Awal <span class="text-red-500">*</span></label>
+                        <input type="number" name="stock" x-model="activeItem.stock" required class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Batas Min. Stok <span class="text-red-500">*</span></label>
+                        <input type="number" name="min_stock" x-model="activeItem.min_stock" required class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
+                    </div>
+                </div>
+                
+                <!-- Pricing Section -->
+                <div class="border border-slate-200 rounded-xl p-4 bg-slate-50/50 space-y-4">
+                    <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Pengaturan Harga</h4>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1">Harga Modal</label>
+                            <input type="number" name="cost_price" x-model="activeItem.cost_price" required class="w-full bg-white border rounded-lg px-3 py-2 text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-blue-600 mb-1">Harga Eceran / Jual</label>
+                            <input type="number" name="selling_price" x-model="activeItem.selling_price" required class="w-full bg-white border-blue-200 rounded-lg px-3 py-2 text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-purple-600 mb-1">Harga Grosir (Satuan)</label>
+                            <input type="number" name="wholesale_price" x-model="activeItem.wholesale_price" class="w-full bg-white border-purple-200 rounded-lg px-3 py-2 text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-purple-600 mb-1">Min Beli utk Grosir</label>
+                            <input type="number" name="wholesale_min_qty" x-model="activeItem.wholesale_min_qty" class="w-full bg-white border-purple-200 rounded-lg px-3 py-2 text-xs">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-slate-200/60">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1">Nama Renceng</label>
+                            <input type="text" name="pack_name" x-model="activeItem.pack_name" placeholder="Renceng / Pack" class="w-full bg-white border rounded-lg px-3 py-2 text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1">Isi per Renceng</label>
+                            <input type="number" name="pack_qty" x-model="activeItem.pack_qty" placeholder="10" class="w-full bg-white border rounded-lg px-3 py-2 text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1">Harga 1 Renceng</label>
+                            <input type="number" name="pack_price" x-model="activeItem.pack_price" placeholder="30000" class="w-full bg-white border rounded-lg px-3 py-2 text-xs">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-slate-200/60">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1">Nama Dus</label>
+                            <input type="text" name="box_name" x-model="activeItem.box_name" placeholder="Dus / Karton" class="w-full bg-white border rounded-lg px-3 py-2 text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1">Isi per Dus</label>
+                            <input type="number" name="box_qty" x-model="activeItem.box_qty" placeholder="40" class="w-full bg-white border rounded-lg px-3 py-2 text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1">Harga 1 Dus</label>
+                            <input type="number" name="box_price" x-model="activeItem.box_price" placeholder="115000" class="w-full bg-white border rounded-lg px-3 py-2 text-xs">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-4 flex justify-end gap-2">
+                    <button type="button" @click="editModalOpen = false" class="px-4 py-2 text-slate-600 font-semibold text-sm rounded-xl">Batal</button>
+                    <button type="submit" class="px-6 py-2 bg-brand-dark hover:bg-brand-800 text-white font-bold text-sm rounded-xl shadow-md">Simpan Perubahan</button>
                 </div>
             </form>
         </div>
