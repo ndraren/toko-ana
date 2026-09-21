@@ -17,6 +17,8 @@ class Transaction extends Model
         'change_amount',
         'cashier_name',
         'customer_name',
+        'customer_id',
+        'sale_mode',
         'status',
         'notes',
     ];
@@ -24,6 +26,11 @@ class Transaction extends Model
     public function items()
     {
         return $this->hasMany(TransactionItem::class);
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
     }
 
     public function getStatusBadgeClassAttribute()
@@ -55,5 +62,10 @@ class Transaction extends Model
             'Debit'    => 'credit-card',
             default    => 'wallet',
         };
+    }
+
+    public function getSaleModeLabelAttribute()
+    {
+        return $this->sale_mode === 'grosir' ? 'Grosir' : 'Eceran';
     }
 }

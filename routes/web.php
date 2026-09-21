@@ -8,6 +8,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\CashierController;
+use App\Http\Controllers\CustomerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +24,10 @@ Route::get('/kasir', [CashierController::class, 'index'])->name('kasir.index');
 Route::post('/kasir/checkout', [CashierController::class, 'store'])->name('kasir.checkout');
 Route::get('/kasir/search', [CashierController::class, 'searchProduct'])->name('kasir.search');
 Route::get('/kasir/receipt/{transaction}', [CashierController::class, 'receipt'])->name('kasir.receipt');
+
+// Pelanggan Routes
+Route::get('/pelanggan/search', [CustomerController::class, 'search'])->name('pelanggan.search');
+Route::resource('pelanggan', CustomerController::class)->parameters(['pelanggan' => 'pelanggan'])->only(['index','create','store','edit','update','destroy']);
 
 // Data Barang Routes
 Route::resource('barang', ProductController::class)->parameters([

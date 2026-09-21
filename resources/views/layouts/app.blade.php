@@ -46,7 +46,7 @@
         <div x-show="sidebarOpen" x-transition.opacity class="fixed inset-0 z-40 bg-slate-900/50 lg:hidden" @click="sidebarOpen = false" style="display: none;"></div>
 
         <!-- Sidebar Navigation -->
-        <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 transition-transform duration-300 lg:static lg:translate-x-0 h-screen overflow-y-auto">
+        <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 transition-transform duration-300 lg:sticky lg:top-0 lg:translate-x-0 h-screen overflow-y-auto">
             <div class="p-5">
                 <!-- Logo & Brand Header -->
                 <div class="flex items-center justify-between mb-8">
@@ -81,6 +81,12 @@
                        class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all {{ request()->routeIs('kasir.*') ? 'bg-brand-100/70 text-brand-800' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
                         <i data-lucide="monitor" class="w-5 h-5 {{ request()->routeIs('kasir.*') ? 'text-brand-700' : 'text-slate-400' }}"></i>
                         <span>Kasir</span>
+                    </a>
+
+                    <a href="{{ route('pelanggan.index') }}" 
+                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all {{ request()->routeIs('pelanggan.*') ? 'bg-brand-100/70 text-brand-800' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
+                        <i data-lucide="users" class="w-5 h-5 {{ request()->routeIs('pelanggan.*') ? 'text-brand-700' : 'text-slate-400' }}"></i>
+                        <span>Pelanggan</span>
                     </a>
 
                     <a href="{{ route('products.index') }}" 
