@@ -18,19 +18,10 @@ class Product extends Model
         'min_stock',
         'unit',
         'cost_price',
-        'selling_price',
-        'wholesale_price',
-        'wholesale_min_qty',
-        'pack_name',
-        'pack_price',
-        'pack_qty',
-        'box_name',
-        'box_price',
-        'box_qty',
         'supplier_name',
     ];
 
-    protected $appends = ['status', 'status_badge_class'];
+    protected $appends = ['status', 'status_badge_class', 'selling_price'];
 
     public function movements()
     {
@@ -40,6 +31,39 @@ class Product extends Model
     public function purchaseOrders()
     {
         return $this->hasMany(PurchaseOrder::class);
+    }
+
+    public function units()
+    {
+        return $this->hasMany(ProductUnit::class)->orderBy('sort_order');
+    }
+
+    public function priceTiers()
+    {
+        return $this->hasManyThrough(PriceTier::class, ProductUnit::class);
+    }
+
+    /**
+     * Get base unit (sort_order = 0)
+     */
+    public function baseUnit()
+    {
+        return $this->hasOne(ProductUnit::class)->where('sort_order', 0);
+    }
+
+    /**
+     * Computed selling_price from base unit's retail price (for backward compat)
+     */
+    public function getSellingPriceAttribute()
+    {
+        $base = $this->relationLoaded('units')
+            ? $this->units->firstWhere('sort_order', 0)
+            : $this->baseUnit;
+
+        if ($base && $base->priceTier) {
+            return (float) $base->priceTier->price_retail;
+        }
+        return 0;
     }
 
     public function getStatusAttribute()

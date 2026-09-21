@@ -46,7 +46,7 @@
         <div x-show="sidebarOpen" x-transition.opacity class="fixed inset-0 z-40 bg-slate-900/50 lg:hidden" @click="sidebarOpen = false" style="display: none;"></div>
 
         <!-- Sidebar Navigation -->
-        <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 transition-transform duration-300 lg:static lg:translate-x-0 h-screen overflow-y-auto">
+        <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 transition-transform duration-300 lg:sticky lg:top-0 lg:translate-x-0 h-screen overflow-y-auto">
             <div class="p-5">
                 <!-- Logo & Brand Header -->
                 <div class="flex items-center justify-between mb-8">
