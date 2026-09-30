@@ -16,6 +16,7 @@ class Product extends Model
         'category',
         'stock',
         'min_stock',
+        'expiry_date',
         'unit',
         'cost_price',
         'selling_price',
@@ -28,6 +29,10 @@ class Product extends Model
         'box_price',
         'box_qty',
         'supplier_name',
+    ];
+
+    protected $casts = [
+        'expiry_date' => 'date',
     ];
 
     protected $appends = ['status', 'status_badge_class'];

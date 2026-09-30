@@ -64,25 +64,12 @@ class CashierController extends Controller
             if (!$product) continue;
 
             $qty = (int) $item['quantity'];
-            $selectedUnit = $item['selected_unit'] ?? 'piece';
+            $unitPrice = $product->selling_price;
+            $unitName = $product->unit;
 
-            // Determine price & unit name based on selected tier
-            switch ($selectedUnit) {
-                case 'pack':
-                    $unitPrice = $product->pack_price;
-                    $unitName = $product->pack_name ?? 'Pack';
-                    $stockDeduct = $qty * ($product->pack_qty ?: 1);
-                    break;
-                case 'box':
-                    $unitPrice = $product->box_price;
-                    $unitName = $product->box_name ?? 'Dus';
-                    $stockDeduct = $qty * ($product->box_qty ?: 1);
-                    break;
-                default: // piece
-                    $unitPrice = $product->selling_price;
-                    $unitName = $product->unit;
-                    $stockDeduct = $qty;
-                    break;
+            // Apply wholesale price if qty meets minimum
+            if ($product->wholesale_price > 0 && $product->wholesale_min_qty > 0 && $qty >= $product->wholesale_min_qty) {
+                $unitPrice = $product->wholesale_price;
             }
 
             $subtotal = $unitPrice * $qty;
@@ -97,18 +84,18 @@ class CashierController extends Controller
                 'subtotal' => $subtotal,
             ];
 
-            // Reduce stock (always in base unit / satuan)
-            $product->stock = max(0, $product->stock - $stockDeduct);
+            // Reduce stock
+            $product->stock = max(0, $product->stock - $qty);
             $product->save();
 
             // Record stock movement as sale
             StockMovement::create([
                 'product_id' => $product->id,
                 'type' => 'sale',
-                'quantity' => $stockDeduct,
+                'quantity' => $qty,
                 'unit' => $product->unit,
                 'source_category' => 'Kasir POS 1 - Penjualan',
-                'notes' => 'Struk ' . $invoiceNumber . ' (' . $qty . ' ' . $unitName . ')',
+                'notes' => 'Struk ' . $invoiceNumber,
                 'user_name' => 'Budi Santoso',
             ]);
         }
