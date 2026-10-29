@@ -68,6 +68,12 @@
                 <span class="text-slate-500">Pembayaran</span>
                 <span class="font-semibold text-slate-700">{{ $transaction->payment_method }}</span>
             </div>
+            <div class="flex justify-between text-xs">
+                <span class="text-slate-500">Mode Jual</span>
+                <span class="font-bold {{ $transaction->sale_mode === 'grosir' ? 'text-purple-700' : 'text-slate-700' }}">
+                    {{ $transaction->sale_mode === 'grosir' ? 'HARGA GROSIR' : 'Eceran' }}
+                </span>
+            </div>
         </div>
 
         <!-- Items -->
@@ -83,15 +89,15 @@
                     <span>{{ $item->quantity }} {{ $item->unit }} x Rp {{ number_format($item->unit_price, 0, ',', '.') }}</span>
                     <span class="font-bold text-slate-900">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</span>
                 </div>
+                @if($item->product && $item->unit !== $item->product->unit)
                 @php
-                    $product = $item->product;
-                    $isPack = $product && $product->pack_name && $item->unit === $product->pack_name;
-                    $isBox = $product && $product->box_name && $item->unit === $product->box_name;
+                    $pu = $item->product->units->firstWhere('unit_name', $item->unit);
                 @endphp
-                @if($isPack)
-                <span class="text-[10px] font-bold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded inline-block">{{ $product->pack_name }} ({{ $product->pack_qty }} {{ $product->unit }})</span>
-                @elseif($isBox)
-                <span class="text-[10px] font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded inline-block">{{ $product->box_name }} ({{ $product->box_qty }} {{ $product->unit }})</span>
+                @if($pu)
+                <span class="text-[10px] font-bold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded inline-block">
+                    {{ $pu->unit_name }} (isi {{ $pu->conversion_factor }} {{ $item->product->unit }})
+                </span>
+                @endif
                 @endif
             </div>
             @endforeach
