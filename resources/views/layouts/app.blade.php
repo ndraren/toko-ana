@@ -184,11 +184,62 @@
                         <span class="hidden md:inline">Catat Stok</span>
                     </a>
 
-                    <!-- Notification Bell -->
-                    <button class="relative p-2 rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50 transition-all">
-                        <i data-lucide="bell" class="w-5 h-5"></i>
-                        <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 ring-2 ring-white"></span>
-                    </button>
+                    <!-- Notification Bell with Expiring Products -->
+                    @php
+                        $expiringProducts = \App\Models\Product::whereNotNull('expiry_date')
+                            ->where('expiry_date', '<=', \Carbon\Carbon::now()->addDays(30))
+                            ->orderBy('expiry_date', 'asc')
+                            ->get();
+                        
+                        $hasNotifications = $expiringProducts->count() > 0;
+                    @endphp
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" @click.away="open = false"
+                                class="relative p-2 rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50 transition-all">
+                            <i data-lucide="bell" class="w-5 h-5"></i>
+                            @if($hasNotifications)
+                            <span class="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-red-500 ring-2 ring-white"></span>
+                            @endif
+                        </button>
+                        
+                        <!-- Notification Dropdown -->
+                        <div x-show="open" x-cloak
+                             class="absolute right-0 mt-2 w-80 bg-white border border-slate-200 rounded-xl shadow-xl z-50 overflow-hidden">
+                            <div class="px-4 py-3 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
+                                <h4 class="font-bold text-slate-800 text-sm">Notifikasi</h4>
+                                @if($hasNotifications)
+                                <span class="text-[10px] font-bold bg-red-100 text-red-700 px-2 py-0.5 rounded-full">{{ $expiringProducts->count() }} Baru</span>
+                                @endif
+                            </div>
+                            <div class="max-h-80 overflow-y-auto">
+                                @if($hasNotifications)
+                                    @foreach($expiringProducts as $ep)
+                                        @php 
+                                            $isExpired = \Carbon\Carbon::parse($ep->expiry_date)->isPast();
+                                        @endphp
+                                        <div class="p-3 border-b border-slate-50 hover:bg-slate-50 flex items-start gap-3 transition-colors">
+                                            <div class="mt-0.5 {{ $isExpired ? 'text-red-500 bg-red-50' : 'text-amber-500 bg-amber-50' }} p-1.5 rounded-lg shrink-0">
+                                                <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                                            </div>
+                                            <div>
+                                                <p class="text-xs font-bold text-slate-900">{{ $ep->name }}</p>
+                                                <p class="text-[11px] font-medium {{ $isExpired ? 'text-red-600' : 'text-amber-700' }} mt-0.5">
+                                                    {{ $isExpired ? 'Kadaluarsa pada' : 'Akan kadaluarsa pada' }} 
+                                                    {{ \Carbon\Carbon::parse($ep->expiry_date)->format('d M Y') }}
+                                                </p>
+                                                <p class="text-[10px] text-slate-500 mt-0.5">Sisa stok: {{ $ep->stock }} {{ $ep->unit }}</p>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="py-6 flex flex-col items-center justify-center text-slate-400">
+                                        <i data-lucide="check-circle-2" class="w-8 h-8 mb-2 text-emerald-400"></i>
+                                        <p class="text-xs font-medium">Tidak ada produk yang mendekati masa kadaluarsa.</p>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Avatar Dropdown -->
                     <div class="flex items-center gap-1 cursor-pointer">

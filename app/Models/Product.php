@@ -16,6 +16,7 @@ class Product extends Model
         'category',
         'stock',
         'min_stock',
+        'expiry_date',
         'unit',
         'cost_price',
         'supplier_name',
