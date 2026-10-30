@@ -47,9 +47,9 @@
 
         <!-- Sidebar Navigation -->
         <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 transition-transform duration-300 lg:sticky lg:top-0 lg:translate-x-0 h-screen overflow-y-auto">
-            <div class="p-5">
+            <div class="p-4">
                 <!-- Logo & Brand Header -->
-                <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center justify-between mb-5">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-xl bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-700 font-bold text-xl">
                             <i data-lucide="store" class="w-5 h-5 text-brand-700"></i>
@@ -66,56 +66,54 @@
                 </div>
 
                 <!-- Navigation Section -->
-                <div class="mb-3">
-                    <span class="text-[11px] font-bold text-slate-400 tracking-wider uppercase px-3">MENU UTAMA</span>
+                <div class="mb-2">
+                    <span class="text-[10px] font-bold text-slate-400 tracking-wider uppercase px-3">MENU UTAMA</span>
                 </div>
 
-                <nav class="space-y-1.5">
-                    <a href="{{ route('dashboard') }}" 
-                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all {{ request()->routeIs('dashboard') ? 'bg-brand-100/70 text-brand-800' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                        <i data-lucide="layout-grid" class="w-5 h-5 {{ request()->routeIs('dashboard') ? 'text-brand-700' : 'text-slate-400' }}"></i>
-                        <span>Dashboard</span>
-                    </a>
-
+                <nav class="space-y-0.5">
                     <a href="{{ route('kasir.index') }}" 
-                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all {{ request()->routeIs('kasir.*') ? 'bg-brand-100/70 text-brand-800' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                        <i data-lucide="monitor" class="w-5 h-5 {{ request()->routeIs('kasir.*') ? 'text-brand-700' : 'text-slate-400' }}"></i>
+                       class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-semibold transition-all {{ request()->routeIs('kasir.*') ? 'bg-brand-100/70 text-brand-800' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
+                        <i data-lucide="monitor" class="w-4.5 h-4.5 {{ request()->routeIs('kasir.*') ? 'text-brand-700' : 'text-slate-400' }}"></i>
                         <span>Kasir</span>
                     </a>
 
                     <a href="{{ route('pelanggan.index') }}" 
-                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all {{ request()->routeIs('pelanggan.*') ? 'bg-brand-100/70 text-brand-800' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                        <i data-lucide="users" class="w-5 h-5 {{ request()->routeIs('pelanggan.*') ? 'text-brand-700' : 'text-slate-400' }}"></i>
-                        <span>Pelanggan</span>
+                       class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-semibold transition-all {{ request()->routeIs('pelanggan.*') ? 'bg-brand-100/70 text-brand-800' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
+                        <i data-lucide="users" class="w-4.5 h-4.5 {{ request()->routeIs('pelanggan.*') ? 'text-brand-700' : 'text-slate-400' }}"></i>
+                        <span>Pelanggan & Suplier</span>
+                    </a>
+
+                    <a href="{{ route('transaksi.index') }}" 
+                       class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-semibold transition-all {{ request()->routeIs('transaksi.*') ? 'bg-brand-100/70 text-brand-800' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
+                        <i data-lucide="receipt" class="w-4.5 h-4.5 {{ request()->routeIs('transaksi.*') ? 'text-brand-700' : 'text-slate-400' }}"></i>
+                        <span>Riwayat Transaksi</span>
+                    </a>
+
+                    <div class="pt-2 pb-1">
+                        <span class="text-[10px] font-bold text-slate-400 tracking-wider uppercase px-3">DATA & KELOLA</span>
+                    </div>
+
+                    <a href="{{ route('dashboard') }}" 
+                       class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-semibold transition-all {{ request()->routeIs('dashboard') ? 'bg-brand-100/70 text-brand-800' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
+                        <i data-lucide="layout-grid" class="w-4.5 h-4.5 {{ request()->routeIs('dashboard') ? 'text-brand-700' : 'text-slate-400' }}"></i>
+                        <span>Dashboard</span>
                     </a>
 
                     <a href="{{ route('products.index') }}" 
-                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all {{ request()->routeIs('products.*') ? 'bg-brand-100/70 text-brand-800' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                        <i data-lucide="package" class="w-5 h-5 {{ request()->routeIs('products.*') ? 'text-brand-700' : 'text-slate-400' }}"></i>
+                       class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-semibold transition-all {{ request()->routeIs('products.*') ? 'bg-brand-100/70 text-brand-800' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
+                        <i data-lucide="package" class="w-4.5 h-4.5 {{ request()->routeIs('products.*') ? 'text-brand-700' : 'text-slate-400' }}"></i>
                         <span>Data Barang</span>
                     </a>
 
                     <a href="{{ route('stok.index') }}" 
-                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all {{ request()->routeIs('stok.*') ? 'bg-brand-100/70 text-brand-800' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                        <i data-lucide="package-plus" class="w-5 h-5 {{ request()->routeIs('stok.*') ? 'text-brand-700' : 'text-slate-400' }}"></i>
+                       class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-semibold transition-all {{ request()->routeIs('stok.*') ? 'bg-brand-100/70 text-brand-800' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
+                        <i data-lucide="package-plus" class="w-4.5 h-4.5 {{ request()->routeIs('stok.*') ? 'text-brand-700' : 'text-slate-400' }}"></i>
                         <span>Stok Masuk</span>
                     </a>
 
-                    <a href="{{ route('transaksi.index') }}" 
-                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all {{ request()->routeIs('transaksi.*') ? 'bg-brand-100/70 text-brand-800' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                        <i data-lucide="receipt" class="w-5 h-5 {{ request()->routeIs('transaksi.*') ? 'text-brand-700' : 'text-slate-400' }}"></i>
-                        <span>Riwayat Transaksi</span>
-                    </a>
-
-                    <a href="{{ route('laporan.index') }}" 
-                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all {{ request()->routeIs('laporan.*') ? 'bg-brand-100/70 text-brand-800' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                        <i data-lucide="line-chart" class="w-5 h-5 {{ request()->routeIs('laporan.*') ? 'text-brand-700' : 'text-slate-400' }}"></i>
-                        <span>Laporan</span>
-                    </a>
-
                     <a href="{{ route('pengaturan.index') }}" 
-                       class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all {{ request()->routeIs('pengaturan.*') ? 'bg-brand-100/70 text-brand-800' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                        <i data-lucide="sliders" class="w-5 h-5 {{ request()->routeIs('pengaturan.*') ? 'text-brand-700' : 'text-slate-400' }}"></i>
+                       class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-semibold transition-all {{ request()->routeIs('pengaturan.*') ? 'bg-brand-100/70 text-brand-800' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
+                        <i data-lucide="sliders" class="w-4.5 h-4.5 {{ request()->routeIs('pengaturan.*') ? 'text-brand-700' : 'text-slate-400' }}"></i>
                         <span>Pengaturan</span>
                     </a>
                 </nav>
@@ -139,7 +137,7 @@
                              alt="Budi Santoso" class="w-9 h-9 rounded-full object-cover border border-slate-200">
                         <div class="overflow-hidden">
                             <p class="text-xs font-bold text-slate-900 truncate">Budi Santoso</p>
-                            <p class="text-[11px] text-slate-400 truncate">Kasir Shift 1</p>
+                            <p class="text-[11px] text-slate-400 truncate">Kasir</p>
                         </div>
                     </div>
                     <button class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100">
@@ -174,7 +172,7 @@
                     <!-- Date & Shift Info -->
                     <div class="hidden lg:flex items-center gap-2 text-xs font-medium text-slate-600 bg-slate-50 border border-slate-200/80 px-3 py-2 rounded-xl">
                         <i data-lucide="calendar" class="w-4 h-4 text-slate-400"></i>
-                        <span>Kamis, 24 Okt • Shift Pagi</span>
+                        <span>{{ now()->locale('id')->isoFormat('dddd, D MMM YYYY') }}</span>
                     </div>
 
                     <!-- Primary Action Button: + Catat Stok -->

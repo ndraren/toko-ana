@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Models\StockMovement;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -35,12 +34,6 @@ class DashboardController extends Controller
 
         $totalCriticalCount = $criticalProductsCount;
 
-        // Aktivitas Terakhir (Timeline pergerakan stok shift pagi)
-        $recentMovements = StockMovement::with('product')
-            ->latest()
-            ->take(5)
-            ->get();
-
         return view('dashboard', compact(
             'timeFilter',
             'totalStockUnits',
@@ -49,8 +42,7 @@ class DashboardController extends Controller
             'todaySalesValue',
             'todayTransactionsCount',
             'restockProducts',
-            'totalCriticalCount',
-            'recentMovements'
+            'totalCriticalCount'
         ));
     }
 }

@@ -45,6 +45,8 @@ Route::resource('barang', ProductController::class)->parameters([
 // Stok Masuk Routes
 Route::get('/stok', [StockMovementController::class, 'index'])->name('stok.index');
 Route::post('/stok', [StockMovementController::class, 'store'])->name('stok.store');
+Route::post('/stok/scan-invoice', [StockMovementController::class, 'scanInvoice'])->name('stok.scan-invoice');
+Route::post('/stok/batch', [StockMovementController::class, 'batchStore'])->name('stok.batch-store');
 
 // Riwayat Transaksi Routes
 Route::get('/transaksi', [TransactionController::class, 'index'])->name('transaksi.index');

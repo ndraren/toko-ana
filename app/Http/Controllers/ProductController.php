@@ -154,7 +154,7 @@ class ProductController extends Controller
             if (!empty($unitData['id'])) {
                 // Update existing unit
                 $unit = ProductUnit::find($unitData['id']);
-                if ($unit && $unit->product_id === $product->id) {
+                if ($unit && (int) $unit->product_id === (int) $product->id) {
                     $unit->update([
                         'unit_name'         => $unitData['unit_name'],
                         'conversion_factor' => $unitData['conversion_factor'],

@@ -137,7 +137,7 @@
                             </span>
                         </td>
                         <td class="px-4 py-3 text-right space-x-1">
-                            <button @click="openEditModal({{ htmlspecialchars(json_encode($p->load('units.priceTier')), ENT_QUOTES, 'UTF-8') }})" class="p-1.5 text-slate-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors" title="Edit">
+                            <button @click="openEditModal({{ $p->id }})" class="p-1.5 text-slate-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors" title="Edit">
                                 <i data-lucide="pencil" class="w-4 h-4"></i>
                             </button>
                             
@@ -567,6 +567,8 @@
 
 @push('scripts')
 <script>
+    window.pageProducts = {!! json_encode(collect($products->items())->keyBy('id')) !!};
+
     function productForm() {
         return {
             addModalOpen: false,
@@ -594,10 +596,14 @@
                     min_wholesale_qty: 1
                 }];
                 this.addModalOpen = true;
+                this.$nextTick(() => lucide.createIcons());
             },
             
-            openEditModal(product) {
-                this.activeItem = product;
+            openEditModal(id) {
+                const product = window.pageProducts[id];
+                if (!product) return;
+                
+                this.activeItem = JSON.parse(JSON.stringify(product));
                 this.baseUnitName = product.unit;
                 
                 if (product.units && product.units.length > 0) {
@@ -621,6 +627,7 @@
                 }
                 
                 this.editModalOpen = true;
+                this.$nextTick(() => lucide.createIcons());
             },
             
             addUnit(target) {
@@ -638,6 +645,7 @@
                 } else if (target === 'edit') {
                     this.editUnits.push({...emptyRow});
                 }
+                this.$nextTick(() => lucide.createIcons());
             },
             
             removeUnit(target, index) {
