@@ -562,6 +562,82 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Edit Barang -->
+    <div x-show="editModalOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-4" @click.away="editModalOpen = false">
+            <div class="flex items-center justify-between">
+                <h3 class="font-bold text-slate-900 text-lg">Edit Barang</h3>
+                <button @click="editModalOpen = false" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <form :action="'{{ url('barang') }}/' + activeItem.id" method="POST" class="space-y-4">
+                @csrf
+                @method('PUT')
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">SKU</label>
+                        <input type="text" name="sku" x-model="activeItem.sku" required class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Barcode</label>
+                        <input type="text" name="barcode" x-model="activeItem.barcode" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Nama Barang</label>
+                    <input type="text" name="name" x-model="activeItem.name" required class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Kategori</label>
+                        <input type="text" name="category" x-model="activeItem.category" required class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Satuan</label>
+                        <input type="text" name="unit" x-model="activeItem.unit" required class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
+                    </div>
+                </div>
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Stok Awal</label>
+                        <input type="number" name="stock" x-model="activeItem.stock" required class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Min. Stok</label>
+                        <input type="number" name="min_stock" x-model="activeItem.min_stock" required class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Tgl Kadaluarsa</label>
+                        <input type="date" name="expiry_date" x-model="activeItem.expiry_date ? activeItem.expiry_date.split('T')[0] : ''" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Harga Modal (Rp)</label>
+                        <input type="number" name="cost_price" x-model="activeItem.cost_price" required class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Harga Jual / Eceran (Rp)</label>
+                        <input type="number" name="selling_price" x-model="activeItem.selling_price" required class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3 border-t border-slate-100 pt-3 mt-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Harga Grosir (Rp) <span class="text-slate-400 font-normal">*opsional</span></label>
+                        <input type="number" name="wholesale_price" x-model="activeItem.wholesale_price" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Min. Beli Grosir <span class="text-slate-400 font-normal">*opsional</span></label>
+                        <input type="number" name="wholesale_min_qty" x-model="activeItem.wholesale_min_qty" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
+                    </div>
+                </div>
+                <div class="pt-3 flex justify-end gap-2">
+                    <button type="button" @click="editModalOpen = false" class="px-4 py-2 text-slate-600 font-semibold text-xs rounded-xl">Batal</button>
+                    <button type="submit" class="px-5 py-2 bg-brand-dark hover:bg-brand-800 text-white font-bold text-xs rounded-xl">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 @endsection
 
