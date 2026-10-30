@@ -73,6 +73,7 @@ class ProductController extends Controller
             'min_stock'=> 'required|integer|min:0',
             'unit'     => 'required|string',
             'cost_price'    => 'required|numeric|min:0',
+            'expiry_date'   => 'nullable|date',
             'supplier_name' => 'nullable|string',
             // Dynamic units array
             'units'                    => 'required|array|min:1',
@@ -90,6 +91,7 @@ class ProductController extends Controller
             'category'      => $validated['category'],
             'stock'         => $validated['stock'],
             'min_stock'     => $validated['min_stock'],
+            'expiry_date'   => $validated['expiry_date'] ?? null,
             'unit'          => $validated['unit'],
             'cost_price'    => $validated['cost_price'],
             'supplier_name' => $validated['supplier_name'] ?? null,
@@ -124,6 +126,7 @@ class ProductController extends Controller
             'min_stock'=> 'required|integer|min:0',
             'unit'     => 'required|string',
             'cost_price'    => 'required|numeric|min:0',
+            'expiry_date'   => 'nullable|date',
             'supplier_name' => 'nullable|string',
             // Dynamic units array
             'units'                    => 'required|array|min:1',
@@ -142,6 +145,7 @@ class ProductController extends Controller
             'category'      => $validated['category'],
             'stock'         => $validated['stock'],
             'min_stock'     => $validated['min_stock'],
+            'expiry_date'   => $validated['expiry_date'] ?? null,
             'unit'          => $validated['unit'],
             'cost_price'    => $validated['cost_price'],
             'supplier_name' => $validated['supplier_name'] ?? null,
@@ -154,7 +158,7 @@ class ProductController extends Controller
             if (!empty($unitData['id'])) {
                 // Update existing unit
                 $unit = ProductUnit::find($unitData['id']);
-                if ($unit && $unit->product_id === $product->id) {
+                if ($unit && (int) $unit->product_id === (int) $product->id) {
                     $unit->update([
                         'unit_name'         => $unitData['unit_name'],
                         'conversion_factor' => $unitData['conversion_factor'],

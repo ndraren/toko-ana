@@ -96,6 +96,7 @@
                         <th class="px-4 py-3">KATEGORI</th>
                         <th class="px-4 py-3">STOK</th>
                         <th class="px-4 py-3">SATUAN</th>
+                        <th class="px-4 py-3">KADALUARSA</th>
                         <th class="px-4 py-3 text-right">HARGA MODAL</th>
                         <th class="px-4 py-3 text-right">HARGA JUAL</th>
                         <th class="px-4 py-3 text-center">KEMASAN</th>
@@ -120,6 +121,23 @@
                             {{ number_format($p->stock, 0, ',', '.') }}
                         </td>
                         <td class="px-4 py-3">{{ $p->unit }}</td>
+                        <td class="px-4 py-3">
+                            @if($p->expiry_date)
+                                @php
+                                    $expDate = \Carbon\Carbon::parse($p->expiry_date);
+                                    $isExpired = $expDate->isPast();
+                                    $isNear = $expDate->diffInDays(now()) <= 30 && !$isExpired;
+                                @endphp
+                                <span class="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-md {{ $isExpired ? 'bg-red-100 text-red-700' : ($isNear ? 'bg-amber-100 text-amber-700' : 'text-slate-600 bg-slate-100') }}">
+                                    @if($isExpired || $isNear)
+                                        <i data-lucide="alert-circle" class="w-3 h-3"></i>
+                                    @endif
+                                    {{ $expDate->format('d/m/Y') }}
+                                </span>
+                            @else
+                                <span class="text-slate-300 text-xs">-</span>
+                            @endif
+                        </td>
                         <td class="px-4 py-3 text-right font-medium text-slate-700">Rp {{ number_format($p->cost_price, 0, ',', '.') }}</td>
                         <td class="px-4 py-3 text-right font-medium text-brand-600">Rp {{ number_format($p->selling_price, 0, ',', '.') }}</td>
                         <td class="px-4 py-3 text-center">
@@ -137,7 +155,7 @@
                             </span>
                         </td>
                         <td class="px-4 py-3 text-right space-x-1">
-                            <button @click="openEditModal({{ htmlspecialchars(json_encode($p->load('units.priceTier')), ENT_QUOTES, 'UTF-8') }})" class="p-1.5 text-slate-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors" title="Edit">
+                            <button @click="openEditModal({{ $p->id }})" class="p-1.5 text-slate-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors" title="Edit">
                                 <i data-lucide="pencil" class="w-4 h-4"></i>
                             </button>
                             
@@ -265,6 +283,11 @@
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-1">Batas Min. Stok <span class="text-rose-500">*</span></label>
                                 <input type="number" name="min_stock" required min="0" step="0.01" value="0" class="w-full rounded-lg border-slate-200 focus:border-brand-500 focus:ring-brand-500">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Tgl Kadaluarsa <span class="text-slate-400 text-xs font-normal">(opsional)</span></label>
+                                <input type="date" name="expiry_date" class="w-full rounded-lg border-slate-200 focus:border-brand-500 focus:ring-brand-500">
                             </div>
 
                             <div>
@@ -450,6 +473,11 @@
                             </div>
 
                             <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Tgl Kadaluarsa <span class="text-slate-400 text-xs font-normal">(opsional)</span></label>
+                                <input type="date" name="expiry_date" x-model="activeItem.expiry_date" class="w-full rounded-lg border-slate-200 focus:border-brand-500 focus:ring-brand-500">
+                            </div>
+
+                            <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-1">Harga Modal (HPP) <span class="text-rose-500">*</span></label>
                                 <div class="relative">
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -560,89 +588,14 @@
                     </div>
                 </form>
             </div>
-        </div>
-    </div>
-
-    <!-- Modal Edit Barang -->
-    <div x-show="editModalOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4">
-        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-4" @click.away="editModalOpen = false">
-            <div class="flex items-center justify-between">
-                <h3 class="font-bold text-slate-900 text-lg">Edit Barang</h3>
-                <button @click="editModalOpen = false" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-            <form :action="'{{ url('barang') }}/' + activeItem.id" method="POST" class="space-y-4">
-                @csrf
-                @method('PUT')
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">SKU</label>
-                        <input type="text" name="sku" x-model="activeItem.sku" required class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Barcode</label>
-                        <input type="text" name="barcode" x-model="activeItem.barcode" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Nama Barang</label>
-                    <input type="text" name="name" x-model="activeItem.name" required class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Kategori</label>
-                        <input type="text" name="category" x-model="activeItem.category" required class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Satuan</label>
-                        <input type="text" name="unit" x-model="activeItem.unit" required class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
-                    </div>
-                </div>
-                <div class="grid grid-cols-3 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Stok Awal</label>
-                        <input type="number" name="stock" x-model="activeItem.stock" required class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Min. Stok</label>
-                        <input type="number" name="min_stock" x-model="activeItem.min_stock" required class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Tgl Kadaluarsa</label>
-                        <input type="date" name="expiry_date" x-model="activeItem.expiry_date ? activeItem.expiry_date.split('T')[0] : ''" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Harga Modal (Rp)</label>
-                        <input type="number" name="cost_price" x-model="activeItem.cost_price" required class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Harga Jual / Eceran (Rp)</label>
-                        <input type="number" name="selling_price" x-model="activeItem.selling_price" required class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-3 border-t border-slate-100 pt-3 mt-3">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Harga Grosir (Rp) <span class="text-slate-400 font-normal">*opsional</span></label>
-                        <input type="number" name="wholesale_price" x-model="activeItem.wholesale_price" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Min. Beli Grosir <span class="text-slate-400 font-normal">*opsional</span></label>
-                        <input type="number" name="wholesale_min_qty" x-model="activeItem.wholesale_min_qty" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-sm">
-                    </div>
-                </div>
-                <div class="pt-3 flex justify-end gap-2">
-                    <button type="button" @click="editModalOpen = false" class="px-4 py-2 text-slate-600 font-semibold text-xs rounded-xl">Batal</button>
-                    <button type="submit" class="px-5 py-2 bg-brand-dark hover:bg-brand-800 text-white font-bold text-xs rounded-xl">Simpan Perubahan</button>
-                </div>
-            </form>
-        </div>
     </div>
 </div>
 @endsection
 
 @push('scripts')
 <script>
+    window.pageProducts = {!! json_encode(collect($products->items())->keyBy('id')) !!};
+
     function productForm() {
         return {
             addModalOpen: false,
@@ -670,10 +623,15 @@
                     min_wholesale_qty: 1
                 }];
                 this.addModalOpen = true;
+                this.$nextTick(() => lucide.createIcons());
             },
             
-            openEditModal(product) {
-                this.activeItem = product;
+            openEditModal(id) {
+                const product = window.pageProducts[id];
+                if (!product) return;
+                
+                this.activeItem = JSON.parse(JSON.stringify(product));
+                this.activeItem.expiry_date = product.expiry_date ? product.expiry_date.split('T')[0] : '';
                 this.baseUnitName = product.unit;
                 
                 if (product.units && product.units.length > 0) {
@@ -697,6 +655,7 @@
                 }
                 
                 this.editModalOpen = true;
+                this.$nextTick(() => lucide.createIcons());
             },
             
             addUnit(target) {
@@ -714,6 +673,7 @@
                 } else if (target === 'edit') {
                     this.editUnits.push({...emptyRow});
                 }
+                this.$nextTick(() => lucide.createIcons());
             },
             
             removeUnit(target, index) {
