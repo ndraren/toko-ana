@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\ProductUnit;
 use App\Models\PriceTier;
+use App\Models\StockMovement;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class ProductController extends Controller
 {
@@ -14,6 +16,7 @@ class ProductController extends Controller
         $search = $request->get('search');
         $category = $request->get('category');
         $status = $request->get('status', 'all');
+        $tab = $request->get('tab', 'data-barang'); // 'data-barang' or 'stok-masuk'
 
         $query = Product::with('units.priceTier');
 
@@ -48,6 +51,42 @@ class ProductController extends Controller
 
         $categories = Product::select('category')->distinct()->pluck('category');
 
+        // Stok Masuk tab data (Segmen 6: merge Stok Masuk into this page)
+        $movements = collect();
+        $filter = $request->get('filter', 'all');
+        $todayIn = 0;
+        $todayOut = 0;
+        $todayDamaged = 0;
+        $allProducts = collect();
+
+        if ($tab === 'stok-masuk') {
+            $smQuery = StockMovement::with('product')->latest();
+            if ($filter === 'in') {
+                $smQuery->where('type', 'in');
+            } elseif ($filter === 'out') {
+                $smQuery->whereIn('type', ['out', 'damaged', 'return']);
+            }
+            $movements = $smQuery->take(20)->get();
+
+            $todayIn = StockMovement::where('type', 'in')
+                ->whereDate('created_at', Carbon::today())
+                ->sum('quantity');
+            $todayOut = StockMovement::whereIn('type', ['out'])
+                ->whereDate('created_at', Carbon::today())
+                ->sum('quantity');
+            $todayDamaged = StockMovement::whereIn('type', ['damaged', 'return'])
+                ->whereDate('created_at', Carbon::today())
+                ->count();
+        }
+
+        // Always need allProducts for stok masuk form
+        $allProducts = Product::orderBy('name')->get();
+
+        // Expiry count for badge
+        $nearExpiryCount = Product::whereNotNull('expiry_date')
+            ->where('expiry_date', '<=', Carbon::now()->addDays(30))
+            ->count();
+
         return view('products.index', compact(
             'products',
             'search',
@@ -58,7 +97,15 @@ class ProductController extends Controller
             'menipisCount',
             'habisCount',
             'criticalCount',
-            'categories'
+            'categories',
+            'tab',
+            'movements',
+            'filter',
+            'todayIn',
+            'todayOut',
+            'todayDamaged',
+            'allProducts',
+            'nearExpiryCount'
         ));
     }
 
