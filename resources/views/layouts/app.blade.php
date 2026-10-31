@@ -100,15 +100,17 @@
                     </a>
 
                     <a href="{{ route('products.index') }}" 
-                       class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-semibold transition-all {{ request()->routeIs('products.*') ? 'bg-brand-100/70 text-brand-800' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                        <i data-lucide="package" class="w-4.5 h-4.5 {{ request()->routeIs('products.*') ? 'text-brand-700' : 'text-slate-400' }}"></i>
-                        <span>Data Barang</span>
-                    </a>
-
-                    <a href="{{ route('stok.index') }}" 
-                       class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-semibold transition-all {{ request()->routeIs('stok.*') ? 'bg-brand-100/70 text-brand-800' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                        <i data-lucide="package-plus" class="w-4.5 h-4.5 {{ request()->routeIs('stok.*') ? 'text-brand-700' : 'text-slate-400' }}"></i>
-                        <span>Stok Masuk</span>
+                       class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-semibold transition-all {{ request()->routeIs('products.*') || request()->routeIs('stok.*') ? 'bg-brand-100/70 text-brand-800' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
+                        <i data-lucide="package-search" class="w-4.5 h-4.5 {{ request()->routeIs('products.*') || request()->routeIs('stok.*') ? 'text-brand-700' : 'text-slate-400' }}"></i>
+                        <span>Stok Barang</span>
+                        @php
+                            $lowStockCount = \App\Models\Product::where(function($q) { $q->whereRaw('stock <= min_stock'); })->count();
+                            $nearExpiryCount = \App\Models\Product::whereNotNull('expiry_date')->where('expiry_date', '<=', \Carbon\Carbon::now()->addDays(30))->count();
+                            $alertTotal = $lowStockCount + $nearExpiryCount;
+                        @endphp
+                        @if($alertTotal > 0)
+                        <span class="ml-auto bg-rose-500 text-white text-[10px] font-black px-1.5 py-0.5 rounded-full min-w-[18px] text-center">{{ $alertTotal }}</span>
+                        @endif
                     </a>
 
                     <a href="{{ route('pengaturan.index') }}" 
@@ -189,50 +191,88 @@
                             ->orderBy('expiry_date', 'asc')
                             ->get();
                         
-                        $hasNotifications = $expiringProducts->count() > 0;
+                        $lowStockProducts = \App\Models\Product::whereRaw('stock <= min_stock')
+                            ->orderByRaw('stock - min_stock ASC')
+                            ->get();
+                        
+                        $totalNotifCount = $expiringProducts->count() + $lowStockProducts->count();
+                        $hasNotifications = $totalNotifCount > 0;
                     @endphp
                     <div class="relative" x-data="{ open: false }">
                         <button @click="open = !open" @click.away="open = false"
                                 class="relative p-2 rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50 transition-all">
                             <i data-lucide="bell" class="w-5 h-5"></i>
                             @if($hasNotifications)
-                            <span class="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-red-500 ring-2 ring-white"></span>
+                            <span class="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 flex items-center justify-center rounded-full bg-red-500 text-white text-[9px] font-black ring-2 ring-white px-1">{{ $totalNotifCount }}</span>
                             @endif
                         </button>
                         
                         <!-- Notification Dropdown -->
                         <div x-show="open" x-cloak
-                             class="absolute right-0 mt-2 w-80 bg-white border border-slate-200 rounded-xl shadow-xl z-50 overflow-hidden">
+                             class="absolute right-0 mt-2 w-96 bg-white border border-slate-200 rounded-xl shadow-xl z-50 overflow-hidden">
                             <div class="px-4 py-3 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
                                 <h4 class="font-bold text-slate-800 text-sm">Notifikasi</h4>
                                 @if($hasNotifications)
-                                <span class="text-[10px] font-bold bg-red-100 text-red-700 px-2 py-0.5 rounded-full">{{ $expiringProducts->count() }} Baru</span>
+                                <span class="text-[10px] font-bold bg-red-100 text-red-700 px-2 py-0.5 rounded-full">{{ $totalNotifCount }} Peringatan</span>
                                 @endif
                             </div>
-                            <div class="max-h-80 overflow-y-auto">
+                            <div class="max-h-96 overflow-y-auto">
                                 @if($hasNotifications)
-                                    @foreach($expiringProducts as $ep)
+                                    {{-- Low Stock Section --}}
+                                    @if($lowStockProducts->count() > 0)
+                                    <div class="px-4 py-2 bg-amber-50/70 border-b border-amber-100">
+                                        <span class="text-[10px] font-bold text-amber-700 uppercase tracking-wider flex items-center gap-1">
+                                            <i data-lucide="package-x" class="w-3 h-3"></i>
+                                            Stok Menipis ({{ $lowStockProducts->count() }})
+                                        </span>
+                                    </div>
+                                    @foreach($lowStockProducts->take(5) as $lp)
+                                    <div class="p-3 border-b border-slate-50 hover:bg-slate-50 flex items-start gap-3 transition-colors">
+                                        <div class="mt-0.5 {{ $lp->stock <= 0 ? 'text-red-500 bg-red-50' : 'text-amber-500 bg-amber-50' }} p-1.5 rounded-lg shrink-0">
+                                            <i data-lucide="package-x" class="w-4 h-4"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs font-bold text-slate-900">{{ $lp->name }}</p>
+                                            <p class="text-[11px] font-medium {{ $lp->stock <= 0 ? 'text-red-600' : 'text-amber-700' }} mt-0.5">
+                                                {{ $lp->stock <= 0 ? 'STOK HABIS' : 'Stok menipis — perlu restock' }}
+                                            </p>
+                                            <p class="text-[10px] text-slate-500 mt-0.5">Sisa: {{ $lp->stock }} {{ $lp->unit }} (min: {{ $lp->min_stock }})</p>
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                    @endif
+
+                                    {{-- Expiring Products Section --}}
+                                    @if($expiringProducts->count() > 0)
+                                    <div class="px-4 py-2 bg-rose-50/70 border-b border-rose-100">
+                                        <span class="text-[10px] font-bold text-rose-700 uppercase tracking-wider flex items-center gap-1">
+                                            <i data-lucide="calendar-clock" class="w-3 h-3"></i>
+                                            Hampir/Sudah Kadaluarsa ({{ $expiringProducts->count() }})
+                                        </span>
+                                    </div>
+                                    @foreach($expiringProducts->take(5) as $ep)
                                         @php 
                                             $isExpired = \Carbon\Carbon::parse($ep->expiry_date)->isPast();
                                         @endphp
-                                        <div class="p-3 border-b border-slate-50 hover:bg-slate-50 flex items-start gap-3 transition-colors">
-                                            <div class="mt-0.5 {{ $isExpired ? 'text-red-500 bg-red-50' : 'text-amber-500 bg-amber-50' }} p-1.5 rounded-lg shrink-0">
-                                                <i data-lucide="alert-triangle" class="w-4 h-4"></i>
-                                            </div>
-                                            <div>
-                                                <p class="text-xs font-bold text-slate-900">{{ $ep->name }}</p>
-                                                <p class="text-[11px] font-medium {{ $isExpired ? 'text-red-600' : 'text-amber-700' }} mt-0.5">
-                                                    {{ $isExpired ? 'Kadaluarsa pada' : 'Akan kadaluarsa pada' }} 
-                                                    {{ \Carbon\Carbon::parse($ep->expiry_date)->format('d M Y') }}
-                                                </p>
-                                                <p class="text-[10px] text-slate-500 mt-0.5">Sisa stok: {{ $ep->stock }} {{ $ep->unit }}</p>
-                                            </div>
+                                    <div class="p-3 border-b border-slate-50 hover:bg-slate-50 flex items-start gap-3 transition-colors">
+                                        <div class="mt-0.5 {{ $isExpired ? 'text-red-500 bg-red-50' : 'text-amber-500 bg-amber-50' }} p-1.5 rounded-lg shrink-0">
+                                            <i data-lucide="alert-triangle" class="w-4 h-4"></i>
                                         </div>
+                                        <div>
+                                            <p class="text-xs font-bold text-slate-900">{{ $ep->name }}</p>
+                                            <p class="text-[11px] font-medium {{ $isExpired ? 'text-red-600' : 'text-amber-700' }} mt-0.5">
+                                                {{ $isExpired ? 'Kadaluarsa pada' : 'Akan kadaluarsa pada' }} 
+                                                {{ \Carbon\Carbon::parse($ep->expiry_date)->format('d M Y') }}
+                                            </p>
+                                            <p class="text-[10px] text-slate-500 mt-0.5">Sisa stok: {{ $ep->stock }} {{ $ep->unit }}</p>
+                                        </div>
+                                    </div>
                                     @endforeach
+                                    @endif
                                 @else
                                     <div class="py-6 flex flex-col items-center justify-center text-slate-400">
                                         <i data-lucide="check-circle-2" class="w-8 h-8 mb-2 text-emerald-400"></i>
-                                        <p class="text-xs font-medium">Tidak ada produk yang mendekati masa kadaluarsa.</p>
+                                        <p class="text-xs font-medium">Semua stok aman, tidak ada peringatan.</p>
                                     </div>
                                 @endif
                             </div>
