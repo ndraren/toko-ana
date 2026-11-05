@@ -20,13 +20,26 @@ foreach ($tmpDirs as $dir) {
     }
 }
 
-putenv('VERCEL=1');
-$_ENV['VERCEL'] = '1';
-$_SERVER['VERCEL'] = '1';
+// Redirect cache bootstrap ke /tmp (karena /var/task/bootstrap/cache di Vercel itu read-only)
+$envMappings = [
+    'VERCEL'             => '1',
+    'APP_DEBUG'          => 'true',
+    'SESSION_DRIVER'     => 'cookie',
+    'CACHE_DRIVER'       => 'array',
+    'LOG_CHANNEL'        => 'stderr',
+    'VIEW_COMPILED_PATH' => '/tmp/views',
+    'APP_SERVICES_CACHE' => '/tmp/bootstrap/cache/services.php',
+    'APP_PACKAGES_CACHE' => '/tmp/bootstrap/cache/packages.php',
+    'APP_CONFIG_CACHE'   => '/tmp/bootstrap/cache/config.php',
+    'APP_ROUTES_CACHE'   => '/tmp/bootstrap/cache/routes.php',
+    'APP_EVENTS_CACHE'   => '/tmp/bootstrap/cache/events.php',
+];
 
-putenv('VIEW_COMPILED_PATH=/tmp/views');
-$_ENV['VIEW_COMPILED_PATH'] = '/tmp/views';
-$_SERVER['VIEW_COMPILED_PATH'] = '/tmp/views';
+foreach ($envMappings as $key => $val) {
+    putenv("{$key}={$val}");
+    $_ENV[$key] = $val;
+    $_SERVER[$key] = $val;
+}
 
 // Teruskan ke file public/index.php bawaan Laravel
 require __DIR__ . '/../public/index.php';
