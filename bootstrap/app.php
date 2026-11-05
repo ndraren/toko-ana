@@ -16,7 +16,13 @@ $app = new Illuminate\Foundation\Application(
 );
 
 // Redirect storage path saat berjalan di Vercel Serverless
-if (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) {
+if (
+    isset($_SERVER['VERCEL']) ||
+    isset($_ENV['VERCEL']) ||
+    env('VERCEL') ||
+    str_contains(__DIR__, '/var/task') ||
+    !is_writable(dirname(__DIR__) . '/storage/framework/views')
+) {
     $app->useStoragePath('/tmp/storage');
 }
 
